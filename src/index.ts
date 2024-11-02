@@ -1,6 +1,7 @@
 import * as dotenv from "dotenv"
 import express from "express"
 import userRoutes from "./routes/users.routes"
+import authRoutes from "./routes/auth.routes"
 
 dotenv.config()
 
@@ -9,7 +10,7 @@ app.use(express.json())
 
 //ROUTES
 app.use("/user", userRoutes())
-
+app.use("/login", authRoutes())
 
 
 const port = process.env.PORT
