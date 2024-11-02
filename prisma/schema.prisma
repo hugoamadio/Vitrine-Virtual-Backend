@@ -18,10 +18,10 @@ datasource db {
 model User {
   id          String      @id @default(uuid())
   name        String      @db.VarChar(255)
-  lastName    String      @db.VarChar(255)
+  lastName    String      @db.VarChar(255) @map("last_name")
   cpf         String      @unique @db.VarChar(11)
   email       String      @unique @db.VarChar(255)
-  birthDate   DateTime
+  birthDate   DateTime    @map("birth_date")
   password    String      @db.VarChar(255)
   preference  Preference
 
