@@ -36,6 +36,7 @@ enum Preference {
 model Category {
   id       String    @id @default(uuid())
   name     String    @unique
+  gender   Preference?
   products Product[]
 
   @@map("category")

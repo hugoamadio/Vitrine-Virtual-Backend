@@ -3,9 +3,9 @@ import AuthController from "../controllers/auth.controller";
 
 const routes = () => {
   const router = Router();
-  const usersController = new AuthController;
+  const authController = new AuthController;
 
-  router.post("/", usersController.login);
+  router.post("/", authController.login);
 
   return router;
 };

@@ -1,12 +1,20 @@
 import { Request, Response } from "express";
 import prisma from "../database/prisma.connection";
 import hashUtils from "../utils/hashUtils";
-import User from "../types/userType";
+import UserType from "../types/userType";
 
 class UserController {
   public async create(req: Request, res: Response) {
     try {
-      const { name, lastName, cpf, email, birthDate, password, preference }: User = req.body;
+      const {
+        name,
+        lastName,
+        cpf,
+        email,
+        birthDate,
+        password,
+        preference,
+      }: UserType = req.body;
 
       if (
         !name ||
@@ -25,12 +33,14 @@ class UserController {
 
       const existingUser = await prisma.user.findFirst({
         where: {
-          OR: [{email}, {cpf}]
-        }
-      })
+          OR: [{ email }, { cpf }],
+        },
+      });
 
-      if(existingUser){
-        res.status(409).json({ success: false, msg: "Email or CPF already in use" });
+      if (existingUser) {
+        res
+          .status(409)
+          .json({ success: false, msg: "Email or CPF already in use" });
         return;
       }
 
@@ -54,117 +64,120 @@ class UserController {
       }
     } catch (err: any) {
       res.status(500).json({ success: false, msg: "Internal server error" });
-      return
+      return;
     }
   }
 
-  public async list(req: Request, res: Response){
-    try{
-      const users = await prisma.user.findMany()
+  public async list(req: Request, res: Response) {
+    try {
+      const users = await prisma.user.findMany();
 
-      res.status(200).json({success: true, msg: "Users listing", users})
-      return
-    }catch(err: any){
+      res.status(200).json({ success: true, msg: "Users listing", users });
+      return;
+    } catch (err: any) {
       res.status(500).json({ success: false, msg: "Internal server error" });
-      return
+      return;
     }
   }
 
-  public async update(req: Request, res: Response){
-    const { id } = req.headers
-    const { name, lastName, cpf, email, birthDate, password, preference } = req.body;
+  public async update(req: Request, res: Response) {
+    const { id } = req.headers;
+    const { name, lastName, cpf, email, birthDate, password, preference } =
+      req.body;
 
-    if(typeof id !== `string`){
-      res.status(400).json({success: false, msg: "Invalid user ID"})
-      return
+    if (typeof id !== `string`) {
+      res.status(400).json({ success: false, msg: "Invalid user ID" });
+      return;
     }
 
-    try{
+    try {
       const user = await prisma.user.findUnique({
         where: {
-          id: id as string
-        }
-      })
+          id: id as string,
+        },
+      });
 
-      if(!user){
-        res.status(404).json({success: false, msg: "User not foud"})
-        return
-      }
-
-      const existingUser = await prisma.user.findFirst({
-        where:{
-          OR: [{email}, {cpf}]
-        }
-      })
-
-      if(existingUser){
-        res.status(409).json({ success: false, msg: "Email or CPF already in use" });
+      if (!user) {
+        res.status(404).json({ success: false, msg: "User not foud" });
         return;
       }
 
-      const hashPass = password ? await hashUtils.hashPass(password) : user?.password
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          OR: [{ email }, { cpf }],
+        },
+      });
+
+      if (existingUser) {
+        res
+          .status(409)
+          .json({ success: false, msg: "Email or CPF already in use" });
+        return;
+      }
+
+      const hashPass = password
+        ? await hashUtils.hashPass(password)
+        : user?.password;
 
       const updateUser = await prisma.user.update({
-        where:{
-          id: id as string
+        where: {
+          id: id as string,
         },
-        data:{
+        data: {
           name,
           birthDate,
           cpf,
           email,
           lastName,
           password: hashPass,
-          preference
-        }
-      })
+          preference,
+        },
+      });
 
-      if(updateUser){
-        res.status(200).json({success: true, msg: "User updated"})
-        return
+      if (updateUser) {
+        res.status(200).json({ success: true, msg: "User updated" });
+        return;
       }
 
-      res.status(400).json({success: false, msg: "Error on updated user"})
-      return
-      
-    } catch(err: any){
+      res.status(400).json({ success: false, msg: "Error on updated user" });
+      return;
+    } catch (err: any) {
       res.status(500).json({ success: false, msg: "Internal server error" });
-      return
+      return;
     }
   }
 
-  public async deleteUser(req: Request, res: Response){
-    const { id } = req.headers
+  public async deleteUser(req: Request, res: Response) {
+    const { id } = req.headers;
 
     if (!id) {
       res.status(400).json({ success: false, msg: "Id is required" });
-      return
+      return;
     }
 
-    try{
+    try {
       const existingUser = await prisma.user.findUnique({
         where: {
-          id: id as string
-        }
-      })
+          id: id as string,
+        },
+      });
 
-      if(!existingUser){
-        res.status(404).json({success: false, msg: "User not found"})
-        return
+      if (!existingUser) {
+        res.status(404).json({ success: false, msg: "User not found" });
+        return;
       }
 
       await prisma.user.delete({
         where: {
-          id: id as string
-        }
-      })
+          id: id as string,
+        },
+      });
 
-      res.status(200).json({success: true, msg: "User deleted"})
-      return
-
-    } catch(err:any) {
+      res.status(200).json({ success: true, msg: "User deleted" });
+      return;
+    } catch (err: any) {
       res.status(500).json({ success: false, msg: "Internal server error" });
-      return
+      return;
     }
   }
 }
