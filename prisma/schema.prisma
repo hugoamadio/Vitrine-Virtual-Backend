@@ -32,3 +32,25 @@ enum Preference {
   MASCULINE
   FEMININE
 }
+
+model Category {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  products Product[]
+
+  @@map("category")
+}
+
+model Product {
+  id           String  @id @default(uuid())
+  name         String
+  description  String?
+  price        Decimal
+  stock        Int
+  productImage String
+  categoryId   String
+  category     Category @relation(fields: [categoryId], references: [id])
+
+  @@index([categoryId])
+  @@map("product")
+}

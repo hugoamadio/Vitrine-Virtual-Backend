@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import prisma from "../database/prisma.connection";
 import hashUtils from "../utils/hashUtils";
+import User from "../types/userType";
 
 class UserController {
   public async create(req: Request, res: Response) {
     try {
-      const { name, lastName, cpf, email, birthDate, password, preference } =
-        req.body;
+      const { name, lastName, cpf, email, birthDate, password, preference }: User = req.body;
 
       if (
         !name ||
