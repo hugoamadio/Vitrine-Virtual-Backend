@@ -6,9 +6,9 @@ const routes = () => {
   const categoryController = new CategoryController()
 
   router.post("/", categoryController.create);
-  // router.get("/", usersController.list)
-  // router.put("/:id", usersController.update)
-  // router.delete("/:id", usersController.deleteUser)
+  router.get("/", categoryController.list)
+  router.put("/:id", categoryController.update)
+  router.delete("/:id", categoryController.delete)
 
   return router;
 };

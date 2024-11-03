@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../database/prisma.connection";
 import hashUtils from "../utils/hashUtils";
-import UserType from "../types/userType";
 
 class UserController {
   public async create(req: Request, res: Response) {
@@ -14,7 +13,7 @@ class UserController {
         birthDate,
         password,
         preference,
-      }: UserType = req.body;
+      } = req.body;
 
       if (
         !name ||
@@ -84,11 +83,6 @@ class UserController {
     const { id } = req.headers;
     const { name, lastName, cpf, email, birthDate, password, preference } =
       req.body;
-
-    if (typeof id !== `string`) {
-      res.status(400).json({ success: false, msg: "Invalid user ID" });
-      return;
-    }
 
     try {
       const user = await prisma.user.findUnique({
