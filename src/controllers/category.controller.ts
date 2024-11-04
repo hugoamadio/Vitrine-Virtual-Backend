@@ -5,16 +5,17 @@ import prisma from "../database/prisma.connection";
 class CategoryController{
     public async create(req: Request, res: Response){
         const { name, gender } = req.body     
+        
         if (!name || !gender) {
             res.status(400).json({ success: false, msg: "Missing required fields: 'name' and 'gender'" })
             return
         }
         
         try{
-            const existingCategory = await prisma.category.findUnique({
+            const existingCategory = await prisma.category.findFirst({
                 where: { 
-                    name,
-                    gender
+                    name: name as string,
+                    gender: gender
                 }
             })
             
