@@ -5,35 +5,38 @@ import prisma from "../database/prisma.connection";
 class CategoryController{
     public async create(req: Request, res: Response){
         const { name, gender } = req.body     
-
         if (!name || !gender) {
             res.status(400).json({ success: false, msg: "Missing required fields: 'name' and 'gender'" })
             return
         }
-
+        
         try{
             const existingCategory = await prisma.category.findUnique({
-                where: { name }
+                where: { 
+                    name,
+                    gender
+                }
             })
-
+            
             if(existingCategory){
                 res.status(409).json({success: false, msg: "Category already exists"})
                 return
             }
-
+            
             const category = await prisma.category.create({
                 data: {
-                    name: name as string,
+                    name,
                     gender
                 }
             })
-
+            
             if(category){
                 res.status(201).json({success: true, msg: "Category created"})
                 return
             }
 
         } catch(err) {
+            console.error(err)
             res.status(500).json({ success: false, msg: "Internal server error" });
             return;
         }
