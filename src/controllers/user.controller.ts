@@ -80,7 +80,7 @@ class UserController {
   }
 
   public async update(req: Request, res: Response) {
-    const { id } = req.headers;
+    const { id } = req.params;
     const { name, lastName, cpf, email, birthDate, password, preference } =
       req.body;
 
@@ -142,7 +142,7 @@ class UserController {
   }
 
   public async deleteUser(req: Request, res: Response) {
-    const { id } = req.headers;
+    const { id } = req.params;
 
     if (!id) {
       res.status(400).json({ success: false, msg: "Id is required" });

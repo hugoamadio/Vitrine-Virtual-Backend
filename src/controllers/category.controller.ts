@@ -37,7 +37,6 @@ class CategoryController{
             }
 
         } catch(err) {
-            console.error(err)
             res.status(500).json({ success: false, msg: "Internal server error" });
             return;
         }

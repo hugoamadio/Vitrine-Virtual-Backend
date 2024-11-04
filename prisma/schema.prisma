@@ -48,7 +48,7 @@ model Product {
   description  String?
   price        Decimal
   stock        Int
-  productImage String
+  productImage String?
   categoryId   String
   category     Category @relation(fields: [categoryId], references: [id])
 
